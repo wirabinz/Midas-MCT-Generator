@@ -13,7 +13,7 @@ sheet_name='TDN-PROFILE'
 df = pd.read_excel(file_path, sheet_name)
 # print(df)
 
-g
+
 
 # Iterate through unique NAME and TDN-GROUP combinations
 for name_group, group_df in df.groupby(['NAME', 'TDN-GROUP']):
