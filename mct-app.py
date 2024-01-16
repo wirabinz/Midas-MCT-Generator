@@ -8,10 +8,11 @@ file_path = 'mctgenerator.xls'
 
 # Dictionary mapping options to script names, function names, and sheet names
 options = {
-    '1': {'option_name':'Structure Group Generator', 'function': 'str_group', 'sheet_name': 'GROUP'},
-    '2': {'option_name':'Section PSC Generator','function': 'psc_valuegen', 'sheet_name': 'SectionInput'},
-    '3': {'option_name':'Tendon Property Generator','function': 'tdn_property', 'sheet_name': 'TDN-PROPERTY'},
-    '4': {'option_name':'Tendon Profile Generator','function': 'tdn_profile', 'sheet_name': 'TDN-PROFILE'},
+    '1': {'option_name':'Node Generator','function': 'node_gen', 'sheet_name': 'NODE'},
+    '2': {'option_name':'Structure Group Generator', 'function': 'str_group', 'sheet_name': 'GROUP'},
+    '3': {'option_name':'Section PSC Generator','function': 'psc_valuegen', 'sheet_name': 'SectionInput'},
+    '4': {'option_name':'Tendon Property Generator','function': 'tdn_property', 'sheet_name': 'TDN-PROPERTY'},
+    '5': {'option_name':'Tendon Profile Generator','function': 'tdn_profile', 'sheet_name': 'TDN-PROFILE'},
     # Add more options here as needed
 }
 

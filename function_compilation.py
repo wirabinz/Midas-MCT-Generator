@@ -1,4 +1,21 @@
 import pandas as pd
+
+# ==============================================================================
+# This script generates nodals table input from excel file
+# ==============================================================================
+
+def node_gen(data):
+    # Define a custom formatting function
+    def custom_format(row):
+        return ' '.join(f'{int(row[0])},{row[1]:.1f},{row[2]:.1f},{row[3]:.1f}'.    split())
+
+    # Apply the custom formatting function to each row
+    formatted_output = data.apply(custom_format, axis=1)
+
+    # Print the formatted output
+    for line in formatted_output:
+        print(line)
+
 # ==============================================================================
 # This script will generates frame element where each has 2 nodes and assign STRUCTURE GROUP to the element 
 # ==============================================================================
