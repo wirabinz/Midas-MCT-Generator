@@ -144,7 +144,7 @@ def tdn_profile(data):
 
 # ==============================================================================
 # This script will read LIST command result from autocad
-#==============================================================================#
+#===============================================================================
             
 def list_reader(data):
     import re
@@ -184,3 +184,16 @@ def list_reader(data):
     # print(xyz_subset)
 
     node_gen(xyz_subset)
+
+
+# ==============================================================================
+# This script will generates necessary database for concrete bridge material
+#===============================================================================
+    
+def material(data):
+    # Iterate through each row in the DataFrame
+        for index, row in data.iterrows():
+            # Iterate through each cell in the row
+            for cell_value in row:
+                print(str(cell_value), end=' ')  # Print the text content of the cell
+            print()  # Move to the next line after printing the entire row
