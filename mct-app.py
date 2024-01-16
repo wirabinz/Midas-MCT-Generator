@@ -3,6 +3,7 @@
 import pandas as pd
 import function_compilation as fc
 
+
 # Replace 'your_file.xlsx' with the path to your Excel file
 file_path = 'mctgenerator.xls'
 
@@ -13,6 +14,7 @@ options = {
     '3': {'option_name':'Section PSC Generator','function': 'psc_valuegen', 'sheet_name': 'SectionInput'},
     '4': {'option_name':'Tendon Property Generator','function': 'tdn_property', 'sheet_name': 'TDN-PROPERTY'},
     '5': {'option_name':'Tendon Profile Generator','function': 'tdn_profile', 'sheet_name': 'TDN-PROFILE'},
+    '6': {'option_name':'Autocad LIST Coordinates Reader','function': 'list_reader', 'sheet_name': 'LIST-READER'},
     # Add more options here as needed
 }
 
@@ -53,7 +55,8 @@ if __name__ == "__main__":
 # sheet_name='GROUP'
 
 # # Read the specific sheet into a DataFrame
-# df = pd.read_excel(file_path, sheet_name)
+# df = pd.read_excel(file_path, sheet_name)6
+
 
 # # Execute structure group generator script 
 # fc.str_group(df)

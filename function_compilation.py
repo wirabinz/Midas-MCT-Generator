@@ -1,4 +1,6 @@
 import pandas as pd
+import re
+
 
 # ==============================================================================
 # This script generates nodals table input from excel file
@@ -7,7 +9,7 @@ import pandas as pd
 def node_gen(data):
     # Define a custom formatting function
     def custom_format(row):
-        return ' '.join(f'{int(row[0])},{row[1]:.1f},{row[2]:.1f},{row[3]:.1f}'.    split())
+        return ' '.join(f'{int(row[0])},{row[1]:.5f},{row[2]:.5f},{row[3]:.5f}'.    split())
 
     # Apply the custom formatting function to each row
     formatted_output = data.apply(custom_format, axis=1)
@@ -139,3 +141,46 @@ def tdn_profile(data):
         # Output unique coordinates
         for _, row in unique_coords.iterrows():
             print(f"\t{row['X']}, {row['Y']}, {row['Z']}, {row['FIX']}, 0, 0, 0")
+
+# ==============================================================================
+# This script will read LIST command result from autocad
+#==============================================================================#
+            
+def list_reader(data):
+    import re
+    # Print column names to identify the correct column
+    # print(data.columns)
+
+    # Define a function to extract X, Y, and Z values from a string
+    def extract_xyz(row):
+        if 'Press ENTER to continue:' not in row:
+            match = re.search(r"X= *(-?\d+\.\d+) *Y= *(-?\d+\.\d+) *Z= *(-?\d+\.\d+)", row)
+            if match:
+                x_value = float(match.group(1))
+                y_value = float(match.group(2))
+                z_value = float(match.group(3))
+                return x_value, y_value, z_value
+        return None
+
+    # Apply the function to the column containing the data
+    xyz_data = data['AUTOCAD DATA'].apply(extract_xyz)
+
+    # Drop rows where extraction failed (returned None)
+    xyz_data = xyz_data.dropna()
+
+    # Create separate columns for X, Y, and Z
+    data[['X', 'Y', 'Z']] = pd.DataFrame(xyz_data.tolist(), index=xyz_data.index)
+
+    # Drop rows where any of X, Y, Z is NaN using .loc
+    data = data.loc[~data[['X', 'Y', 'Z']].isna().any(axis=1)]
+
+    # Create a new column 'NODE' starting from 1
+    data['NODE'] = range(1, len(data) + 1)
+
+    # Create a new variable holding the subset of the DataFrame
+    xyz_subset = data[['NODE', 'X', 'Y', 'Z']]
+
+    # Print the results
+    # print(xyz_subset)
+
+    node_gen(xyz_subset)

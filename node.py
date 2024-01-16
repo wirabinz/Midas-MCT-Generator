@@ -10,7 +10,7 @@ file_path = 'mctgenerator.xls'
 # Read the specific sheet into a DataFrame
 data = pd.read_excel(file_path, sheet_name='NODE')
 df = data
-# print(data)
+print(data)
 
 # Define a custom formatting function
 def custom_format(row):
@@ -20,5 +20,5 @@ def custom_format(row):
 formatted_output = df.apply(custom_format, axis=1)
 
 # Print the formatted output
-for line in formatted_output:
-    print(line)
+# for line in formatted_output:
+#     print(line)
