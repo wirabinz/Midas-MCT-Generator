@@ -48,10 +48,10 @@ def psc_valuegen(data):
         sect = name[0]
         psc = name[1]
 
-        opoly_values = group[['OPOLY X', 'OPOLY Y']].values.flatten()
+        opoly_values = group[['OPOLY X', 'OPOLY Y']].dropna().values.flatten()
         opoly = ','.join(str(val) for val in opoly_values)
 
-        ipoly_values = group[['IPOLY X', 'IPOLY Y']].values.flatten()
+        ipoly_values = group[['IPOLY X', 'IPOLY Y']].dropna().values.flatten()
         ipoly = ','.join(str(val) for val in ipoly_values)
 
         print(f"SECT= {sect}, PSC, {psc}, CB, 0, 0, 0, 0, 0, 0, YES, NO, VALU")
@@ -197,3 +197,30 @@ def material(data):
             for cell_value in row:
                 print(str(cell_value), end=' ')  # Print the text content of the cell
             print()  # Move to the next line after printing the entire row
+
+
+# ==============================================================================
+# This script generates element table input from excel file 
+# ==============================================================================
+
+def element_gen(data):
+    # Create a new DataFrame with the desired format
+    new_columns = ['ELEMENT', 'BEAM', 'MATERIAL', 'SECTION NUMBER', 'NODE-1',   'NODE-2', 'Extra_Text']
+    new_df = pd.DataFrame(columns=new_columns)
+
+    # Iterate through the original DataFrame and append rows to the new DataFrame
+    for index, row in data.iterrows():
+        new_row = {
+            'ELEMENT': row['ELEMENT'],
+            'BEAM': 'BEAM',
+            'MATERIAL': row['MATERIAL'],
+            'SECTION NUMBER': row['SECTION NUMBER'],
+            'NODE-1': row['NODE-1'],
+            'NODE-2': row['NODE-2'],
+            'Extra_Text': '0, 0'  # Add the desired text as a string
+        }
+        new_df = new_df.append(new_row, ignore_index=True)
+
+    # Print the resulting DataFrame in CSV-like format
+    csv_like_string = new_df.to_csv(index=False).replace('"', '')
+    print(csv_like_string)
