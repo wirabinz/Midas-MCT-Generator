@@ -130,8 +130,8 @@ def tdn_profile(data):
     print("*TDN-PROFILE   ; Tendon Profile")
     for name, group in grouped:
         print(f"NAME={name}, {group['TDN-PROP'].iloc[0]}, {group['ASSIGNEE'].iloc   [0]}, 0, 0, SPLINE, 3D")
-        print("\tTESTLINE, USER, 0, 0, NO,")
-        print("\tELEMENT, END-I, 18, I-J")
+        print(f"\t{group['TDN-GROUP'].iloc[0]}, USER, 0, 0, NO,")
+        print(f"\tELEMENT, END-I, {group['INSERTION'].iloc[0]}, I-J")
         print(f"\t0, YES, 0, 0")
 
         # Get unique coordinates for each group
