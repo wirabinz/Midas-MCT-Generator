@@ -1,96 +1,115 @@
 import numpy as np
 
-def generate_parabolic_line(center_x, eccentricity_y, eccentricity_z, length, offset_y=0, offset_z=0, num_points=5):
-    # Define the parameter t
-    t_values = np.linspace(-length/2, length/2, num_points)
+def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
+    """
+    Calculates the coefficients of a second-order polynomial and the coordinates of points A, B, and C.
 
-    # Calculate X, Y, Z coordinates for the parabolic line
-    x_values = center_x + t_values + length/2
-    y_values = (1 - (t_values / (length / 2))**2) * eccentricity_y + offset_y
-    z_values = (1 - (t_values / (length / 2))**2) * eccentricity_z + offset_z
+    Parameters:
+    - ecc_y: Eccentricity of the parabolic curve along the y-axis.
+    - ecc_z: Eccentricity of the parabolic curve along the z-axis.
+    - l_par_y: Length of the half parabolic curve from A to C (symmetric to E to G).
+    - b_x: X-coordinate of point B.
+    - offset_y: Offset to be applied to y-coordinates (default is 0).
+    - offset_z: Offset to be applied to z-coordinates (default is 0).
 
-    return list(zip(x_values, y_values, z_values))
+    Returns:
+    - Coefficients of the second-order polynomial (a, b, c).
+    - Coordinates of points A, B, and C.
+    """
+    # Coordinates of points A, C, and E
+    point_a = (0, 0, 0)
+    point_c = (l_par_y, ecc_y, ecc_z)
+    point_e = (2 * l_par_y, 0, ecc_z)
 
-def generate_and_print_multiple_lines(center_x, eccentricity_y, eccentricity_z, length, offset_y=0, ecc_orient=0,  num_lines=1, addl_length=0, add_ecc_y=0, add_ecc_z=0, num_points=5):
-    for _ in range(num_lines):
-        # Generate a line using the generate_parabolic_line function
-        line_points = generate_parabolic_line(center_x, eccentricity_y, eccentricity_z, length, offset_y,offset_z, num_points)
+    # Set up a system of equations to solve for a, b, and c
+    A = np.array([
+        [point_a[0]**2, point_a[0], 1],
+        [point_c[0]**2, point_c[0], 1],
+        [point_e[0]**2, point_e[0], 1]
+    ])
 
-        # Print the constant eccentricity orientation
-        # print(ecc_orient)
-        
-        # Print the coordinates of the generated points
-        for point in line_points:
-            print(f"{point[0]:.2f} {ecc_orient*point[1]:.2f} {point[2]:.2f}")
+    B = np.array([point_a[1], point_c[1], point_e[1]])
 
-        # Update parameters for the next line
-        length += addl_length
-        eccentricity_y += add_ecc_y
-        eccentricity_z += add_ecc_z
-        ecc_orient*=toggler
+    # Solve the system of equations
+    coefficients = np.linalg.solve(A, B)
 
-# Input parameters
+    # Function to calculate y-coordinate given x-coordinate
+    def calculate_y(x):
+        return coefficients[0] * x**2 + coefficients[1] * x + coefficients[2]
 
-eccentricity_y = 542
-eccentricity_z = 121
-length = 12444
-center_x = 0
-num_lines = 14
-addl_length = 5000
-add_ecc_y = 297
-add_ecc_z = 0
-offset_y = 3780
-offset_z= -360
-ecc_orient = 1
-toggler=-1
+    # Calculate y-coordinate of point B when b_x is given
+    b_y = calculate_y(b_x) + offset_y
 
+    # Coordinates of points A, B, and C
+    point_a = f"{point_a[0]}, {point_a[1] + offset_y}, {point_a[2] + offset_z}"
+    point_b = f"{b_x}, {b_y}, {ecc_z + offset_z}"
+    point_c = f"{point_c[0]}, {point_c[1] + offset_y}, {point_c[2] + offset_z}"
 
-# Generate and print multiple lines with offset_y
-generate_and_print_multiple_lines(center_x, eccentricity_y, eccentricity_z, length, offset_y, ecc_orient, num_lines, addl_length, add_ecc_y, add_ecc_z)
+    return coefficients, point_a, point_b, point_c
 
+def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, offset_z=0):
+    """
+    Generates coordinates for points A, B, C, D, E, F, and G based on the given parameters.
 
+    Parameters:
+    - ecc_y: Eccentricity of the parabolic curve along the y-axis.
+    - ecc_z: Eccentricity of the parabolic curve along the z-axis.
+    - l_par_y: Length of the half parabolic curve from A to C (symmetric to E to G).
+    - b_x: X-coordinate of point B.
+    - length: Total length of the line.
+    - offset_y: Offset to be applied to y-coordinates (default is 0).
+    - offset_z: Offset to be applied to z-coordinates (default is 0).
 
-# ==============================================================================
-# Parabolic - straight - parabolic
-# ==============================================================================
+    Returns:
+    - Coordinates of points A, B, C, D, E, F, and G.
+    """
+    # Calculate the parabolic segment
+    coefficients, point_a, point_b, point_c = parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y, offset_z)
 
-# import numpy as np
-# import matplotlib.pyplot as plt
+    # Function to calculate y-coordinate given x-coordinate
+    def calculate_y(x):
+        return coefficients[0] * x**2 + coefficients[1] * x + coefficients[2]
 
-# def generate_parabolic_coordinates(start, end, num_points):
-#     t = np.linspace(0, 1, num_points)
-#     x = start[0] + t * (end[0] - start[0])
-#     y = start[1] + (t ** 2) * (end[1] - start[1])
-#     z = start[2] + t * (end[2] - start[2])
-#     return np.column_stack((x, y, z))
+    # Calculate point D as the midpoint of the line
+    point_d_x = 0.5 * length
+    point_d_y = ecc_y + offset_y
+    point_d_z = ecc_z + offset_z
+    point_d = f"{point_d_x}, {point_d_y}, {point_d_z}"
 
-# def generate_straight_coordinates(start, end, num_points):
-#     t = np.linspace(0, 1, num_points)
-#     x = start[0] + t * (end[0] - start[0])
-#     y = start[1] + t * (end[1] - start[1])
-#     z = start[2] + t * (end[2] - start[2])
-#     return np.column_stack((x, y, z))
+    # Mirror points A, B, C with respect to point D
+    point_e_x = 2 * point_d_x - float(point_c.split(',')[0])
+    point_e_y = float(point_c.split(',')[1])
+    point_e_z = ecc_z + offset_z
+    point_e = f"{point_e_x}, {point_e_y}, {point_e_z}"
 
-# # Anchor points
-# anchor1 = np.array([0, 0, 0])
-# anchor2 = np.array([5, 5, 5])
-# anchor3 = np.array([10, 0, 0])
+    point_f_x = 2 * point_d_x - float(point_b.split(',')[0])
+    point_f_y = float(point_b.split(',')[1])
+    point_f_z = ecc_z + offset_z
+    point_f = f"{point_f_x}, {point_f_y}, {point_f_z}"
 
-# # First parabolic segment
-# parabolic1 = generate_parabolic_coordinates(anchor1, anchor2, 50)
+    point_g_x = 2 * point_d_x - float(point_a.split(',')[0])
+    point_g_y = float(point_a.split(',')[1]) 
+    point_g_z = float(point_a.split(',')[2]) 
+    point_g = f"{point_g_x}, {point_g_y}, {point_g_z}"
 
-# # Second parabolic segment
-# parabolic2 = generate_parabolic_coordinates(anchor2, anchor3, 50)
+    # Print the results
+    print(point_a)
+    print(point_b)
+    print(point_c)
+    print(point_d)
+    print(point_e)
+    print(point_f)
+    print(point_g)
 
-# # Combine segments
-# tendon_coordinates = np.vstack((parabolic1, parabolic2))
+    return point_a, point_b, point_c, point_d, point_e, point_f, point_g
 
-# # Plot the tendon coordinates
-# fig = plt.figure()
-# ax = fig.add_subplot(111, projection='3d')
-# ax.plot(tendon_coordinates[:, 0], tendon_coordinates[:, 1], tendon_coordinates[:, 2])
-# ax.set_xlabel('X')
-# ax.set_ylabel('Y')
-# ax.set_zlabel('Z')
-# plt.show()
+# Example usage:
+ecc_y = 0.5
+ecc_z = 0.2
+l_par_y = 5
+b_x = 2
+length = 20
+offset_y = 1
+offset_z = 0.5
 
+generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)

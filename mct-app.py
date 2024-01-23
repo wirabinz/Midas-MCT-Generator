@@ -2,6 +2,7 @@
 
 import pandas as pd
 import function_compilation as fc
+import numpy as np
 
 
 # Replace 'your_file.xlsx' with the path to your Excel file
