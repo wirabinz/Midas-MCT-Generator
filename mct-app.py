@@ -14,7 +14,7 @@ options = {
     '2': {'option_name':'Structure Group Generator', 'function': 'str_group', 'sheet_name': 'GROUP'},
     '3': {'option_name':'Section PSC Generator','function': 'psc_valuegen', 'sheet_name': 'SectionInput'},
     '4': {'option_name':'Tendon Property Generator','function': 'tdn_property', 'sheet_name': 'TDN-PROPERTY'},
-    '5': {'option_name':'Tendon Profile Generator','function': 'tdn_profile', 'sheet_name': 'TDN-PROFILE'},
+    '5': {'option_name':'Tendon Profile Generator','function': 'tdn_profile', 'sheet_name': 'TDN-GEN'},
     '6': {'option_name':'Autocad LIST Coordinates Reader','function': 'list_reader', 'sheet_name': 'LIST-READER'},
     '7': {'option_name':'Material Database','function': 'material', 'sheet_name': 'MATERIAL'},
     '8': {'option_name':'Element Generator','function': 'element_gen', 'sheet_name': 'ELEMENT'},

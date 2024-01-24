@@ -1,4 +1,14 @@
 import numpy as np
+import pandas as pd
+
+# Replace 'your_file.xlsx' with the path to your Excel file
+file_path = 'mctgenerator.xls'
+
+# Read the specific sheet into a DataFrame
+sheet_name='TDN-GEN'
+df = pd.read_excel(file_path, sheet_name)
+# print(df)
+
 
 def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
     """
@@ -93,23 +103,69 @@ def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, of
     point_g = f"{point_g_x}, {point_g_y}, {point_g_z}"
 
     # Print the results
-    print(point_a)
-    print(point_b)
-    print(point_c)
-    print(point_d)
-    print(point_e)
-    print(point_f)
-    print(point_g)
+    # print(point_a)
+    # print(point_b)
+    # print(point_c)
+    # print(point_d)
+    # print(point_e)
+    # print(point_f)
+    # print(point_g)
 
     return point_a, point_b, point_c, point_d, point_e, point_f, point_g
 
-# Example usage:
-ecc_y = 0.5
-ecc_z = 0.2
-l_par_y = 5
-b_x = 2
-length = 20
-offset_y = 1
-offset_z = 0.5
+# # Example usage:
+# ecc_y = 764
+# ecc_z = -300
+# l_par_y = 4000
+# b_x = 2500
+# length = 12520
+# offset_y = 3556
+# offset_z = -460
 
-generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
+# generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
+
+
+
+def generate_and_print_coordinates(row):
+    ecc_y = row['ECC Y']
+    ecc_z = row['ECC Z']
+    l_par_y = row['l_par_y']
+    b_x = row['b_x']
+    length = row['LENGTH']
+    offset_y = row['OFFSET Y']
+    offset_z = row['OFFSET Z']
+
+    # Call generate_line_coordinates function
+    coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
+
+    # Print the results in the desired format
+    print(f"NAME={row['NAME']}, {row['TDN-PROP']}, {row['FROM']}to{row['TO']}, 0, 0, SPLINE, 3D")
+    print(f"    {row['TDN GROUP']}, USER, 0, 0, NO,")
+    print(f"    ELEMENT, END-I, {row['FROM']}, I-J")
+    print("    0, YES, 0, 0")
+
+    # Access coordinates directly
+    point_a, point_b, point_c, point_d, point_e, point_f, point_g = coordinates
+
+    # Extract X, Y, and Z components for each point
+    points = [point_a, point_b, point_c, point_d, point_e, point_f, point_g]
+    coordinates_labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+
+    for coord_label, point in zip(coordinates_labels, points):
+        X, Y, Z = map(float, point.split(', '))
+        print(f"    {X}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
+
+# Replace 'your_file.xlsx' with the path to your Excel file
+file_path = 'mctgenerator.xls'
+
+# Read the specific sheet into a DataFrame
+sheet_name='TDN-GEN'
+df = pd.read_excel(file_path, sheet_name)
+
+# Iterate through each row in the DataFrame
+print("*TDN-PROFILE   ; Tendon Profile")
+for index, row in df.iterrows():
+    generate_and_print_coordinates(row)
+
+
+
