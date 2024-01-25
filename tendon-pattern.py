@@ -51,13 +51,13 @@ def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
     b_y = calculate_y(b_x) + offset_y
 
     # Coordinates of points A, B, and C
-    point_a = f"{point_a[0]}, {point_a[1] + offset_y}, {point_a[2] + offset_z}"
+    point_a = f"{point_a[0] }, {point_a[1] + offset_y}, {point_a[2] + offset_z}"
     point_b = f"{b_x}, {b_y}, {ecc_z + offset_z}"
     point_c = f"{point_c[0]}, {point_c[1] + offset_y}, {point_c[2] + offset_z}"
 
     return coefficients, point_a, point_b, point_c
 
-def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, offset_z=0):
+def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, offset_z=0, ):
     """
     Generates coordinates for points A, B, C, D, E, F, and G based on the given parameters.
 
@@ -81,7 +81,7 @@ def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, of
         return coefficients[0] * x**2 + coefficients[1] * x + coefficients[2]
 
     # Calculate point D as the midpoint of the line
-    point_d_x = 0.5 * length
+    point_d_x = 0.5 * length 
     point_d_y = ecc_y + offset_y
     point_d_z = ecc_z + offset_z
     point_d = f"{point_d_x}, {point_d_y}, {point_d_z}"
@@ -134,6 +134,7 @@ def generate_and_print_coordinates(row):
     length = row['LENGTH']
     offset_y = row['OFFSET Y']
     offset_z = row['OFFSET Z']
+    offset_x = row['OFFSET X']
 
     # Call generate_line_coordinates function
     coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
@@ -153,7 +154,7 @@ def generate_and_print_coordinates(row):
 
     for coord_label, point in zip(coordinates_labels, points):
         X, Y, Z = map(float, point.split(', '))
-        print(f"    {X}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
+        print(f"    {X+offset_x}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
 
 # Replace 'your_file.xlsx' with the path to your Excel file
 file_path = 'mctgenerator.xls'

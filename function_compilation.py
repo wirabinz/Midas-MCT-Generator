@@ -117,7 +117,7 @@ def tendon_group():
     
     # Iterating through each row in the DataFrame
     for index, row in df.iterrows():
-        print(f" {row['GROUP']}")
+        print(f" {row['TDN GROUP']}")
 
 def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
     """
@@ -230,6 +230,7 @@ def generate_and_print_coordinates(row):
     length = row['LENGTH']
     offset_y = row['OFFSET Y']
     offset_z = row['OFFSET Z']
+    offset_x = row['OFFSET X']
 
     # Call generate_line_coordinates function
     coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
@@ -249,7 +250,7 @@ def generate_and_print_coordinates(row):
 
     for coord_label, point in zip(coordinates_labels, points):
         X, Y, Z = map(float, point.split(', '))
-        print(f"    {X}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
+        print(f"    {X+offset_x}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
 
 
 def tendon_layout_gen(data):
