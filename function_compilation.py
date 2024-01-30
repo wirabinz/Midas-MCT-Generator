@@ -166,7 +166,7 @@ def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
 
     return coefficients, point_a, point_b, point_c
 
-def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, offset_z=0):
+def generate_line_coordinates(ecc_y, ecc_z, l_par_y,mid_par_z,b_x, length, offset_y=0, offset_z=0, ):
     """
     Generates coordinates for points A, B, C, D, E, F, and G based on the given parameters.
 
@@ -190,9 +190,9 @@ def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, of
         return coefficients[0] * x**2 + coefficients[1] * x + coefficients[2]
 
     # Calculate point D as the midpoint of the line
-    point_d_x = 0.5 * length
+    point_d_x = 0.5 * length 
     point_d_y = ecc_y + offset_y
-    point_d_z = ecc_z + offset_z
+    point_d_z = ecc_z + offset_z + mid_par_z
     point_d = f"{point_d_x}, {point_d_y}, {point_d_z}"
 
     # Mirror points A, B, C with respect to point D
@@ -222,18 +222,32 @@ def generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y=0, of
 
     return point_a, point_b, point_c, point_d, point_e, point_f, point_g
 
+# # Example usage:
+# ecc_y = 764
+# ecc_z = -300
+# l_par_y = 4000
+# b_x = 2500
+# length = 12520
+# offset_y = 3556
+# offset_z = -460
+
+# generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
+
+
+
 def generate_and_print_coordinates(row):
     ecc_y = row['ECC Y']
     ecc_z = row['ECC Z']
     l_par_y = row['l_par_y']
     b_x = row['b_x']
+    mid_par_z = row['mid_par_z']
     length = row['LENGTH']
     offset_y = row['OFFSET Y']
     offset_z = row['OFFSET Z']
     offset_x = row['OFFSET X']
 
     # Call generate_line_coordinates function
-    coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, b_x, length, offset_y, offset_z)
+    coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, mid_par_z, b_x, length, offset_y, offset_z)
 
     # Print the results in the desired format
     print(f"NAME={row['NAME']}, {row['TDN-PROP']}, {row['FROM']}to{row['TO']}, 0, 0, SPLINE, 3D")
