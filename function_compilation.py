@@ -166,7 +166,7 @@ def parabolic_segment(ecc_y, ecc_z, l_par_y, b_x, offset_y=0, offset_z=0):
 
     return coefficients, point_a, point_b, point_c
 
-def generate_line_coordinates(ecc_y, ecc_z, l_par_y,mid_par_z,b_x, length, offset_y=0, offset_z=0, ):
+def generate_line_coordinates(ecc_y, ecc_z, l_par_y,mid_par_z,b_x, length, offset_y=0, offset_z=0, imbalance_z=0 ):
     """
     Generates coordinates for points A, B, C, D, E, F, and G based on the given parameters.
 
@@ -198,17 +198,17 @@ def generate_line_coordinates(ecc_y, ecc_z, l_par_y,mid_par_z,b_x, length, offse
     # Mirror points A, B, C with respect to point D
     point_e_x = 2 * point_d_x - float(point_c.split(',')[0])
     point_e_y = float(point_c.split(',')[1])
-    point_e_z = ecc_z + offset_z
+    point_e_z = ecc_z + offset_z + imbalance_z
     point_e = f"{point_e_x}, {point_e_y}, {point_e_z}"
 
     point_f_x = 2 * point_d_x - float(point_b.split(',')[0])
     point_f_y = float(point_b.split(',')[1])
-    point_f_z = ecc_z + offset_z
+    point_f_z = ecc_z + offset_z + imbalance_z
     point_f = f"{point_f_x}, {point_f_y}, {point_f_z}"
 
     point_g_x = 2 * point_d_x - float(point_a.split(',')[0])
     point_g_y = float(point_a.split(',')[1]) 
-    point_g_z = float(point_a.split(',')[2]) 
+    point_g_z = float(point_a.split(',')[2])  + imbalance_z
     point_g = f"{point_g_x}, {point_g_y}, {point_g_z}"
 
     # Print the results
@@ -245,9 +245,10 @@ def generate_and_print_coordinates(row):
     offset_y = row['OFFSET Y']
     offset_z = row['OFFSET Z']
     offset_x = row['OFFSET X']
+    imbalance_z = row['imbalance_z']
 
     # Call generate_line_coordinates function
-    coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, mid_par_z, b_x, length, offset_y, offset_z)
+    coordinates = generate_line_coordinates(ecc_y, ecc_z, l_par_y, mid_par_z, b_x, length, offset_y, offset_z,imbalance_z)
 
     # Print the results in the desired format
     print(f"NAME={row['NAME']}, {row['TDN-PROP']}, {row['FROM']}to{row['TO']}, 0, 0, SPLINE, 3D")
@@ -264,7 +265,7 @@ def generate_and_print_coordinates(row):
 
     for coord_label, point in zip(coordinates_labels, points):
         X, Y, Z = map(float, point.split(', '))
-        print(f"    {X+1200}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
+        print(f"    {X+ offset_x}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
 
 
 def tendon_layout_gen(data):
