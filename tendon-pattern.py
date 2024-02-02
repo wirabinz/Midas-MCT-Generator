@@ -155,7 +155,7 @@ def generate_and_print_coordinates(row):
 
     for coord_label, point in zip(coordinates_labels, points):
         X, Y, Z = map(float, point.split(', '))
-        print(f"    {X+offset_x}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
+        print(f"    {X}, {Y}, {Z}, {'YES' if coord_label == 'D' else 'NO'}, 0, 0, 0")
 
 # Replace 'your_file.xlsx' with the path to your Excel file
 file_path = 'mctgenerator.xls'
