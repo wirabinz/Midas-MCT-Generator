@@ -361,3 +361,75 @@ def element_gen(data):
     # Print the resulting DataFrame in CSV-like format
     csv_like_string = new_df.to_csv(index=False).replace('"', '')
     print(csv_like_string)
+
+
+# ==============================================================================
+# This script will call Concentrated load 
+#===============================================================================
+def static_loadcase():
+    # Define the load cases data
+    load_cases_data = [
+        ('SW', 'D', 'SELF WEIGHT'),
+        ('PS', 'PS', 'PRESTRESS'),
+        ('FT', 'CS', 'FORM TRAVELLER'),
+        ('WC', 'CS', 'WET CONCRETE'),
+        ('ASP', 'PL', 'ASPHALT'),
+        ('BAR', 'DC', 'BARRIER'),
+        ('BGT L', 'L', 'BGT L'),
+        ('BGT M', 'L', 'BGT M'),
+        ('BGT R', 'L', 'BGT R'),
+        ('BTR L', 'L', 'BTR L'),
+        ('BTR M', 'L', 'BTR M'),
+        ('BTR R', 'L', 'BTR R'),
+        ('TMAX', 'T', 'TEMP MAX'),
+        ('TMIN', 'T', 'TEMP MIN'),
+        ('TGRAD', 'T', 'TEMP GRADIENT'),
+        ('ORNAM', 'D', 'ORNAMENT')
+]
+
+    # Print the load cases header
+    print("*STLDCASE    ; Static Load Cases")
+    print("; LCNAME, LCTYPE, DESC")
+    
+    # Print each load case
+    for lc_name, lc_type, desc in load_cases_data:
+        print(f"   {lc_name:<5}, {lc_type:<3}, {desc}")
+
+
+def conload_gen(data):
+
+    load_case = input("Enter load case name:\n")
+
+    # Read columns 'A' to 'H' of the 'CONLOAD' sheet into a DataFrame
+    # Exclude columns higher than 'H'
+    data = data.iloc[:, :8]
+
+    # Drop rows with NaN values
+    data = data.dropna()
+
+    # Generate static load case
+    static_loadcase()
+    print("\n")
+
+    # Print the header for Load Group
+    print("*LOAD-GROUP    ; Load Group")
+    print("; NAME")
+
+    # Get unique values from column 'GROUP'
+    unique_groups = data['GROUP'].unique()
+
+    # Print each unique group
+    for group in unique_groups:
+        print(f"{group}")
+    print("\n")
+
+    # Print the desired text format
+    print(f"*USE-STLD, {load_case}")
+    print("\n*CONLOAD    ; Nodal Loads")
+    print("; NODE_LIST, FX, FY, FZ, MX, MY, MZ, GROUP")
+
+    # Iterate through each row in the DataFrame
+    for _, row in data.iterrows():
+        print(f"{int(row['NODE_LIST'])}, {row['FX']}, {row['FY']}, {row['FZ']}, {row    ['MX']}, {row['MY']}, {row['MZ']}, {row['GROUP']}")
+
+    print("\nReminder, please set unit configuration to kN-m before executing MCT command.")

@@ -18,6 +18,7 @@ options = {
     '6': {'option_name':'Autocad LIST Coordinates Reader','function': 'list_reader', 'sheet_name': 'LIST-READER'},
     '7': {'option_name':'Material Database','function': 'material', 'sheet_name': 'MATERIAL'},
     '8': {'option_name':'Element Generator','function': 'element_gen', 'sheet_name': 'ELEMENT'},
+    '9': {'option_name':'Concentrated Load Generator','function': 'conload_gen', 'sheet_name': 'CONLOAD'},
     # Add more options here as needed
 }
 
